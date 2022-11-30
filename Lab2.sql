@@ -1,3 +1,4 @@
+Create database if not exists dbmsnewlab;
 USE dbmsnewlab;
 
 -- CREATE TABLE FOR SUPPLIER
@@ -240,18 +241,18 @@ END AS Type_of_Service FROM
 FROM
    (SELECT test2.SUPP_ID, SUM(test2.rat_ratstars)/COUNT(test2.rat_ratstars) AS Average 
      FROM
-        (SELECT supplier_pricing.SUPP_ID, test.ORD_ID, test.RAT_RATSTARS 
-              FROM supplier_pricing 
-                INNER JOIN
-                    (SELECT orders.PRICING_ID, rating.ORD_ID, rating.RAT_RATSTARS  
-                          FROM orders  
-                             INNER JOIN  
-                                  rating ON rating.ORD_ID = orders.ORD_ID ) AS test
-                                     ON test.PRICING_ID = supplier_pricing.PRICING_ID)
-                                          AS test2 group by supplier_pricing.SUPP_ID)
-                                             AS final 
-                                               INNER JOIN 
-                                                 supplier WHERE final.SUPP_ID = supplier.SUPP_ID) AS report;
+    (SELECT supplier_pricing.SUPP_ID, test.ORD_ID, test.RAT_RATSTARS 
+      FROM supplier_pricing 
+      INNER JOIN
+     (SELECT orders.PRICING_ID, rating.ORD_ID, rating.RAT_RATSTARS  
+      FROM orders  
+      INNER JOIN  
+      rating ON rating.ORD_ID = orders.ORD_ID ) AS test
+      ON test.PRICING_ID = supplier_pricing.PRICING_ID)
+      AS test2 group by supplier_pricing.SUPP_ID)
+      AS final 
+      INNER JOIN 
+      supplier WHERE final.SUPP_ID = supplier.SUPP_ID) AS report;
 END 
 //
 DELIMITER ;
